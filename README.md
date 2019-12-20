@@ -1,2 +1,3 @@
-# cs50w_project3
-Django website for pizza restaurent
+# Project 3
+
+Web Programming with Python and JavaScript

@@ -1,0 +1,33 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+  Login
+{% endblock %}
+
+{% block main %}
+<div class="container pt-5">
+  <br>
+  <div class="form_wrapper text-center">
+    {% if message %}
+        <div>
+            {{ message }}
+        </div>
+    {% endif %}
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div style="form-group">
+            <label for="username">Username</label>
+            <input name="username" type="text"/>
+        </div>
+        <div style="form-group">
+            <label for="password">Password</label>
+            <input name="password" type="password"/>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}

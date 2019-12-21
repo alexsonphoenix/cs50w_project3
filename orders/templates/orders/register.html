@@ -1,0 +1,142 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+<div class="container pt-5">
+  <br>
+  <form action="{% url 'register' %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="first_name">Fist name</label>
+      <input type="text" class="form-control" name="first_name" placeholder="Smith" required>
+
+      <label for="last_name">Last name</label>
+      <input type="text" class="form-control" name="last_name" placeholder="Queens" required>
+    </div>
+
+    <div style="form-group">
+        <label for="emailField">Email address</label>
+        <input autocomplete="off" autofocus class="form-control" id = "emailField" name="email" placeholder="youremail@example.com" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+    </div>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input autocomplete="off" autofocus class="form-control" id = "username" name="username" placeholder="Username" type="text" required data-container="body" data-toggle="popover" data-placement="left" data-content="Too short or alredy exists">
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input class="form-control" id = "password" name="password" placeholder="Password" type="password" required>
+    </div>
+
+    <div class="form-group">
+        <label for="confirmation">Confirmation</label>
+        <input class="form-control" id = "confirmation" name="confirmation" placeholder="Confirmation" type="password" required>
+    </div>
+    <div class="text-center">
+      <button class="btn btn-primary" type="submit" name="submit">Register</button>
+    </div>
+
+  </form>
+</div>
+
+
+<script>
+var submitability_username = false;
+var submitability_email = false;
+var submitability_passwordMatched = false;
+document.addEventListener('DOMContentLoaded', () => {
+    var user_input;
+    // as typing on username input field:
+    document.querySelector('input[name="username"]').onkeyup =function(){
+        user_input = document.getElementById("username").value;
+        // Initialize new request
+        const request = new XMLHttpRequest();
+        request.open('POST', '/check');
+        // Callback function for when request completes
+        request.onload = () => {
+            // Extract JSON data from request
+            const data = JSON.parse(request.responseText);
+            if(data.validity == true){
+                document.querySelector('input[name="username"]').style['border-color']="palegreen";
+                $('#username').popover('hide');
+                console.log("Username available");
+                submitability_username = true;
+            }
+            else{
+                document.querySelector('input[name="username"]').style['border-color']="salmon";
+                $('#username').popover('show');
+                console.log("Username unavailable");
+                submitability_username = false;
+            }
+        }
+        // Add data to send with request
+        let username = new FormData();
+        username.append("username", user_input);
+        username.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        // Send request
+        request.send(username);
+    }
+    // implement check email with the server too.
+    var emailField;
+    var isValidEmail;
+    $('input[name="email"]').keyup(function(){
+        emailField = document.getElementById("emailField");
+        isValidEmail = emailField.checkValidity();
+        if ( isValidEmail ) {
+            $('input[name="email"]').css("border-color", "palegreen");
+            console.log("email is valid");
+            submitability_email = true;
+        } else {
+            $('input[name="email"]').css("border-color", "salmon");
+            console.log("email is invalid");
+            submitability_email = false;
+        }
+    });
+    // Check password's existence
+    $('input[name="confirmation"]').keyup(function(){
+        var password;
+        password = document.getElementById("password").value;
+        if(password.length < 1){
+            $('input[name="password"]').css("border-color", "salmon");
+            $('input[name="confirmation"]').css("border-color", "salmon");
+            console.log("Too short");
+            submitability_passwordMatched = false;
+        }
+    });
+    // check password and confirmation is matched
+    $('input[name="confirmation"]').keyup(function(){
+        var password;
+        password = document.getElementById("password").value;
+        var confirmation;
+        confirmation = document.getElementById("confirmation").value;
+        // check equality of the password and confirmation
+        if(password == confirmation){
+            // if password and confirmation are matched => approve to proceed
+            $('input[name="password"]').css("border-color", "palegreen");
+            $('input[name="confirmation"]').css("border-color", "palegreen");
+            console.log("Password matched");
+            submitability_passwordMatched = true;
+        } else{
+            // if password and confirmation do not match => disapprove to proceed
+            $('input[name="password"]').css("border-color", "salmon");
+            $('input[name="confirmation"]').css("border-color", "salmon");
+            console.log("Password did not match");
+            submitability_passwordMatched = false;
+        }
+     });
+    // SUBMITTABILITY
+    $( "form" ).submit(function( event ) {
+        if(submitability_username == true & submitability_email == true & submitability_passwordMatched == true){
+            $( "form" ).submit();
+        }
+        else{
+            event.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

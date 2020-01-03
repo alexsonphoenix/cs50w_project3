@@ -1,10 +1,558 @@
 {% extends "orders/base.html" %}
 
 {% block title %}
-  Pizza
+    Menu
 {% endblock %}
 
 
 {% block main %}
+
+<div class="container pt-2">
+  <div class="d-flex justify-content-center">
+      <div id="menu">
+        <div id="menu_header" class="d-flex justify-content-center">
+              <div id="menu_title">
+                  <img src="static/orders/images/menu.png" alt="menu_title" style="height: 70px; width: auto">
+              </div>
+        </div>
+
+        <div id="menu_body">
+              <!-- IDEA: Menu Nav bar -->
+              <div id="menu_nav" class="d-flex justify-content-center">
+                <nav>
+                    <div id="menuListDiv">
+                        <div class="menu_top_nav">
+                            <a href="#pizzas">Pizza</a>
+                            <a href="#toppings">Topping</a>
+                            <a href="#subs">Sub</a>
+                            <a href="#pastas">Pasta</a>
+                            <a href="#salads">Salad</a>
+                            <a href="#dinner_platters">Dinner Platters</a>
+                        </div>
+                    </div>
+                </nav>
+              </div>
+              <hr>
+
+              <div id="menu_content">
+                <!-- IDEA: Pizza -->
+                <div id="pizzas">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th class="col-4">#PIZZA</th>
+                          <th class="col-3">Topping Types</th>
+                          <th class="col-2">Small</th>
+                          <th class="col-2">Large</th>
+                          <th class="col-1"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for pizza in pizzas_menu %}
+
+                          <tr>
+                            <th class="col-4">{{pizza.pizza_type}}</th>
+                            <td class="col-3">{{ pizza.topping_type }}</td>
+                            <td class="col-2">{{pizza.price_small}}</td>
+                            <td class="col-2">{{pizza.price_large}}</td>
+                            <td class="col-1">
+                              <button type="button" class="add_to_cart_button"
+                                data-name="pizza"
+                                data-id="{{pizza.id}}">
+                                <img src="static/orders/images/shopping_cart.png" alt="cart" style="width:24px; height:auto;">
+                              </button>
+                            </td>
+                          </tr>
+
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+
+                <!-- IDEA: Menu Nav bar -->
+                <div id="menu_nav" class="d-flex justify-content-center">
+                  <nav>
+                      <div id="menuListDiv">
+                          <div class="menu_top_nav">
+                              <a href="#pizzas">Pizza</a>
+                              <a href="#toppings">Topping</a>
+                              <a href="#subs">Sub</a>
+                              <a href="#pastas">Pasta</a>
+                              <a href="#salads">Salad</a>
+                              <a href="#dinner_platters">Dinner Platters</a>
+                          </div>
+                      </div>
+                  </nav>
+                </div>
+                <hr>
+
+                <!-- IDEA: Toppings -->
+                <div id="toppings">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th class="col-4"></th>
+                          <th class="col-4">#Topping List:
+                            <input type="checkbox" id="show_topping_checkbox" value="show Toppings" onclick="show_topping_list()"/> View
+                          </th>
+                          <th class="col-4"></th>
+                        </tr>
+                      </thead>
+
+                      <tbody id="toppings_list" style='display:none'>
+                        {% for topping in toppings_menu %}
+                          <tr>
+                            <th class="col-4"></th>
+                            <th class="col-4">{{topping.topping_name}}</th>
+                            <th class="col-4"></th>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+
+                <!-- IDEA: Menu Nav bar -->
+                <div id="menu_nav" class="d-flex justify-content-center">
+                  <nav>
+                      <div id="menuListDiv">
+                          <div class="menu_top_nav">
+                              <a href="#pizzas">Pizza</a>
+                              <a href="#toppings">Topping</a>
+                              <a href="#subs">Sub</a>
+                              <a href="#pastas">Pasta</a>
+                              <a href="#salads">Salad</a>
+                              <a href="#dinner_platters">Dinner Platters</a>
+                          </div>
+                      </div>
+                  </nav>
+                </div>
+                <hr>
+
+                <!-- IDEA: Subs -->
+                <div id="subs">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th class="col-7">#SUBS</th>
+                          <th class="col-2">Small</th>
+                          <th class="col-2">Large</th>
+                          <th class="col-1"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for sub in subs_menu %}
+
+                          <tr>
+                            <th class="col-7">{{sub.sub_name}}</th>
+                            <td class="col-2">{{sub.price_small}}</td>
+                            <td class="col-2">{{sub.price_large}}</td>
+                            <td class="col-1">
+                              <button type="button" class="add_to_cart_button"
+                                data-name="sub"
+                                data-id="{{sub.id}}"><img src="static/orders/images/shopping_cart.png" alt="cart" style="width:24px; height:auto;">
+                              </button>
+                            </td>
+                          </tr>
+
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+
+                <!-- IDEA: Menu Nav bar -->
+                <div id="menu_nav" class="d-flex justify-content-center">
+                  <nav>
+                      <div id="menuListDiv">
+                          <div class="menu_top_nav">
+                              <a href="#pizzas">Pizza</a>
+                              <a href="#toppings">Topping</a>
+                              <a href="#subs">Sub</a>
+                              <a href="#pastas">Pasta</a>
+                              <a href="#salads">Salad</a>
+                              <a href="#dinner_platters">Dinner Platters</a>
+                          </div>
+                      </div>
+                  </nav>
+                </div>
+                <hr>
+
+                <!-- IDEA: Sub_addons -->
+                <div id="sub_addons">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th class="col-9">#Addons for Subs:</th>
+                          <th class="col-2">Price</th>
+                          <th class="col-1"></th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {% for addon in sub_addons_menu %}
+                          <tr>
+                            <th class="col-9">{{addon.sub_addon_name}}</th>
+                            <th class="col-2">{{addon.price}}</th>
+                            <th class="col-1"></th>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+
+                <!-- IDEA: Menu Nav bar -->
+                <div id="menu_nav" class="d-flex justify-content-center">
+                  <nav>
+                      <div id="menuListDiv">
+                          <div class="menu_top_nav">
+                              <a href="#pizzas">Pizza</a>
+                              <a href="#toppings">Topping</a>
+                              <a href="#subs">Sub</a>
+                              <a href="#pastas">Pasta</a>
+                              <a href="#salads">Salad</a>
+                              <a href="#dinner_platters">Dinner Platters</a>
+                          </div>
+                      </div>
+                  </nav>
+                </div>
+                <hr>
+
+                <!-- IDEA: Pastas -->
+                <div id="pastas">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th class="col-9">#PASTAS</th>
+                          <th class="col-2">Price</th>
+                          <th class="col-1"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for pasta in pastas_menu %}
+
+                          <tr>
+                            <th class="col-9">{{pasta.pasta_name}}</th>
+                            <td class="col-2">{{pasta.price}}</td>
+                            <td class="col-1">
+                              <button type="button" class="add_to_cart_button"
+                                data-name="pasta"
+                                data-id="{{pasta.id}}">
+                                <img src="static/orders/images/shopping_cart.png" alt="cart" style="width:24px; height:auto;">
+                              </button>
+                            </td>
+                          </tr>
+
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+
+                <!-- IDEA: Menu Nav bar -->
+                <div id="menu_nav" class="d-flex justify-content-center">
+                  <nav>
+                      <div id="menuListDiv">
+                          <div class="menu_top_nav">
+                              <a href="#pizzas">Pizza</a>
+                              <a href="#toppings">Topping</a>
+                              <a href="#subs">Sub</a>
+                              <a href="#pastas">Pasta</a>
+                              <a href="#salads">Salad</a>
+                              <a href="#dinner_platters">Dinner Platters</a>
+                          </div>
+                      </div>
+                  </nav>
+                </div>
+                <hr>
+
+                <!-- IDEA: Salads -->
+                <div id="salads">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th class="col-9">#SALADS</th>
+                          <th class="col-2">Price</th>
+                          <th class="col-1"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for salad in salads_menu %}
+
+                          <tr>
+                            <th class="col-9">{{salad.salad_name}}</th>
+                            <td class="col-2">{{salad.price}}</td>
+                            <td class="col-1">
+                              <button type="button" class="add_to_cart_button"
+                                data-name="salad"
+                                data-id="{{salad.id}}">
+                                <img src="static/orders/images/shopping_cart.png" alt="cart" style="width:24px; height:auto;">
+                              </button>
+                            </td>
+                          </tr>
+
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+
+                <!-- IDEA: Menu Nav bar -->
+                <div id="menu_nav" class="d-flex justify-content-center">
+                  <nav>
+                      <div id="menuListDiv">
+                          <div class="menu_top_nav">
+                              <a href="#pizzas">Pizza</a>
+                              <a href="#toppings">Topping</a>
+                              <a href="#subs">Sub</a>
+                              <a href="#pastas">Pasta</a>
+                              <a href="#salads">Salad</a>
+                              <a href="#dinner_platters">Dinner Platters</a>
+                          </div>
+                      </div>
+                  </nav>
+                </div>
+                <hr>
+
+                <!-- IDEA: Dinner platters -->
+                <div id="dinner_platters">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th class="col-7">#DINNERS</th>
+                          <th class="col-2">Small</th>
+                          <th class="col-2">Large</th>
+                          <th class="col-1"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for dinner in dinner_platters_menu %}
+
+                          <tr>
+                            <th class="col-7">{{dinner.plate_name}}</th>
+                            <td class="col-2">{{dinner.price_small}}</td>
+                            <td class="col-2">{{dinner.price_large}}</td>
+                            <td class="col-1">
+                              <button type="button" class="add_to_cart_button"
+                                data-name="dinner_platter"
+                                data-id="{{dinner.id}}">
+                                <img src="static/orders/images/shopping_cart.png" alt="cart" style="width:24px; height:auto;">
+                              </button>
+                            </td>
+                          </tr>
+
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+              </div>
+        </div>
+
+      </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+function show_topping_list(){
+    var topping_checkbox = document.getElementById("show_topping_checkbox");
+    var toppings_list = document.getElementById("toppings_list");
+    // If the checkbox is checked, display the output text
+    if (topping_checkbox.checked == true){
+     toppings_list.style.display = "block";
+    } else {
+     toppings_list.style.display = "none";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+                  // Handling add to cart ( Store in session )
+                  document.querySelectorAll('.add_to_cart_button').forEach(function(button) {
+                      button.onclick = function() {
+
+                          // Handling Pizza Cart Adding:
+                          if (button.dataset.name == "pizza") {
+                                // initialize a new request
+                                const request = new XMLHttpRequest();
+                                let url = '/add_to_cart/pizza/';
+                                let pizza_id = button.dataset.id;
+
+                                request.open('POST', url + pizza_id);
+
+                                // callback function for when request completes
+                                request.onload = () => {
+
+                                      // Extract JSON data from request
+                                      let data;
+                                      try {
+                                          data = JSON.parse(request.responseText);
+                                      } catch(e) {
+                                          alert("Please login to continue"); // error in the above string (in this case, yes)!
+                                      }
+
+                                      // Do sth with the response (Create an animation (item hop in the cart))
+                                      if (data.item_added) {
+                                           console.log("you've addded this item");
+                                       }
+                                       else {
+                                           console.log("Can't add this item");
+                                       }
+                                }
+
+                                // Add data to send with request
+                                let adding_to_cart = new FormData();
+                                adding_to_cart.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                                request.send(adding_to_cart);
+
+                                console.log("request sent!");
+                          }
+
+                          // Handling Sub Cart Adding:
+                          else if (button.dataset.name == "sub") {
+                                // initialize a new request
+                                const request = new XMLHttpRequest();
+                                let url = '/add_to_cart/sub/';
+                                let sub_id = button.dataset.id;
+
+                                request.open('POST', url + sub_id);
+
+                                // callback function for when request completes
+                                request.onload = () => {
+
+                                      // Extract JSON data from request
+                                      let data;
+                                      try {
+                                          data = JSON.parse(request.responseText);
+                                      } catch(e) {
+                                          alert("Please login to continue"); // error in the above string (in this case, yes)!
+                                      }
+
+                                      // Do sth with the response (Create an animation (item hop in the cart))
+                                      if (data.item_added) {
+                                           console.log("you've addded this item");
+                                       }
+                                       else {
+                                           console.log("Can't add this item");
+                                       }
+                                }
+
+                                // Add data to send with request
+                                let adding_to_cart = new FormData();
+                                adding_to_cart.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                                request.send(adding_to_cart);
+
+                                console.log("request sent!");
+                          }
+
+                          // Handling Pasta Cart Adding:
+                          else if (button.dataset.name == "pasta") {
+                                // initialize a new request
+                                const request = new XMLHttpRequest();
+                                let url = '/add_to_cart/pasta/';
+                                let pasta_id = button.dataset.id;
+
+                                request.open('POST', url + pasta_id);
+
+                                // callback function for when request completes
+                                request.onload = () => {
+
+                                      // Extract JSON data from request
+                                      let data;
+                                      try {
+                                          data = JSON.parse(request.responseText);
+                                      } catch(e) {
+                                          alert("Please login to continue"); // error in the above string (in this case, yes)!
+                                      }
+
+                                      // Do sth with the response (Create an animation (item hop in the cart))
+                                      if (data.item_added) {
+                                           console.log("you've addded this item");
+                                       }
+                                       else {
+                                           console.log("Can't add this item");
+                                       }
+                                }
+
+                                // Add data to send with request
+                                let adding_to_cart = new FormData();
+                                adding_to_cart.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                                request.send(adding_to_cart);
+
+                                console.log("request sent!");
+                          }
+
+                          // Handling Salad Cart Adding:
+                          else if (button.dataset.name == "salad") {
+                                // initialize a new request
+                                const request = new XMLHttpRequest();
+                                let url = '/add_to_cart/salad/';
+                                let salad_id = button.dataset.id;
+
+                                request.open('POST', url + salad_id);
+
+                                // callback function for when request completes
+                                request.onload = () => {
+
+                                      // Extract JSON data from request
+                                      let data;
+                                      try {
+                                          data = JSON.parse(request.responseText);
+                                      } catch(e) {
+                                          alert("Please login to continue"); // error in the above string (in this case, yes)!
+                                      }
+
+                                      // Do sth with the response (Create an animation (item hop in the cart))
+                                      if (data.item_added) {
+                                           console.log("you've addded this item");
+                                       }
+                                       else {
+                                           console.log("Can't add this item");
+                                       }
+                                }
+
+                                // Add data to send with request
+                                let adding_to_cart = new FormData();
+                                adding_to_cart.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                                request.send(adding_to_cart);
+
+                                console.log("request sent!");
+                          }
+
+                          // Handling Dinner Platters Cart Adding:
+                          else if (button.dataset.name == "dinner_platter") {
+                                // initialize a new request
+                                const request = new XMLHttpRequest();
+                                let url = '/add_to_cart/dinner_platter/';
+                                let dinner_platter_id = button.dataset.id;
+
+                                request.open('POST', url + dinner_platter_id);
+
+                                // callback function for when request completes
+                                request.onload = () => {
+
+                                      // Extract JSON data from request
+                                      let data;
+                                      try {
+                                          data = JSON.parse(request.responseText);
+                                      } catch(e) {
+                                          alert("Please login to continue"); // error in the above string (in this case, yes)!
+                                      }
+
+                                      // Do sth with the response (Create an animation (item hop in the cart))
+                                      if (data.item_added) {
+                                           console.log("you've addded this item");
+                                       }
+                                       else {
+                                           console.log("Can't add this item");
+                                       }
+                                }
+
+                                // Add data to send with request
+                                let adding_to_cart = new FormData();
+                                adding_to_cart.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                                request.send(adding_to_cart);
+
+                                console.log("request sent!");
+                          };
+                      }
+                  });
+
+});
+</script>
 
 {% endblock %}

@@ -16,257 +16,270 @@
           </header>
 
           <h3>Pizzas:</h3>
-          <form id="pizzas_cart" action="" method="post" onsubmit="validate_pizza_cart()">
-              {% csrf_token %}
-              <!-- IDEA: PIZZA -->
-              <div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr class="d-flex">
-                            <th class="col-2">Pizza Type</th>
-                            <th class="col-2">Topping Type</th>
-                            <th class="col-2">Size</th>
-                            <th class="col-3">Choose Toppings</th>
-                            <th class="col-2">Price</th>
-                            <th class="col-1"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="pizzas_cart_body">
-                        {% for pizza in pizzas_in_cart %}
-                        <tr class="item_block d-flex">
-                             <td id="pizza_name" class="col-2"> {{pizza.pizza_type}} </td>
-                             <td id="pizza_topping_type" class="col-2">{{pizza.topping_type}}</td>
-                             <td id="pizza_size" class="col-2">
-                                  <select class="changing_size" name="pizza_size">
-                                    {% if pizza.pizza_size == size_small %}
-                                      <option value="Small" selected>Small</option>
-                                      <option value="Large">Large</option>
-                                    {% else %}
-                                    <option value="Small">Small</option>
-                                    <option value="Large" selected>Large</option>
-                                    {% endif %}
-                                  </select>
-                             </td>
-                             <td id="pizza_toppings" class="col-3">
-                                  {% if pizza.topping_type == cheese_topping_type or pizza.topping_type == special_topping_type %}
-                                    <select class="selectpicker toppings_select" name="pizza_toppings" multiple searchable data-max-options="0">
-                                  {% elif pizza.topping_type == one_topping_topping_type %}
-                                    <select class="selectpicker toppings_select" name="pizza_toppings" multiple searchable data-max-options="1">
-                                  {% elif pizza.topping_type == two_topping_topping_type %}
-                                    <select class="selectpicker toppings_select" name="pizza_toppings" multiple searchable data-max-options="2">
-                                  {% elif pizza.topping_type == three_topping_topping_type %}
-                                    <select class="selectpicker toppings_select" name="pizza_toppings" multiple searchable data-max-options="3">
-                                  {% endif %}
-
-                                      {% if pizza.topping_type == cheese_topping_type or pizza.topping_type == special_topping_type %}
-                                      <option value="" disabled>No Topping</option>
+          <div id="pizzas_cart">
+            <form  action="" method="post" onsubmit="validate_pizza_cart()">
+                {% csrf_token %}
+                <!-- IDEA: PIZZA -->
+                <div>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr class="d-flex">
+                              <th class="col-2">Pizza Type</th>
+                              <th class="col-2">Topping Type</th>
+                              <th class="col-2">Size</th>
+                              <th class="col-3">Choose Toppings</th>
+                              <th class="col-2">Price</th>
+                              <th class="col-1"></th>
+                          </tr>
+                      </thead>
+                      <tbody id="pizzas_cart_body">
+                          {% for pizza in pizzas_in_cart %}
+                          <tr class="item_block d-flex">
+                               <td id="pizza_name" class="col-2"> {{pizza.pizza_type}} </td>
+                               <td id="pizza_topping_type" class="col-2">{{pizza.topping_type}}</td>
+                               <td id="pizza_size" class="col-2">
+                                    <select class="changing_size_pizza" name="pizza_size">
+                                      {% if pizza.pizza_size == size_small %}
+                                        <option value="Small" selected>Small</option>
+                                        <option value="Large">Large</option>
                                       {% else %}
-                                          {% for topping in topping_list %}
-                                            {% if topping in pizza.topping.all %}
-                                              <option value="{{topping.id}}" selected>{{topping.topping_name}}</option>
-                                            {% else %}
-                                              <option value="{{topping.id}}">{{topping.topping_name}}</option>
-                                            {% endif %}
-                                          {% endfor %}
+                                      <option value="Small">Small</option>
+                                      <option value="Large" selected>Large</option>
                                       {% endif %}
-                                  </select>
-                             </td>
-                             {% if pizza.pizza_size == size_small %}
-                             <td id="pizza_price" class="col-2">{{pizza.price_small}}</td> <!-- IDEA: Large or small by backend -->
-                             {% else %}
-                             <td id="pizza_price" class="col-2">{{pizza.price_large}}</td> <!-- IDEA: Large or small by backend -->
-                             {% endif %}
-                             <td id="pizza_delete" class="col-1">
-                                <button type="button" class="pizza_delete_item">X</button>
-                             </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-              </div>
-          </form>
+                                    </select>
+                               </td>
+                               <td id="pizza_toppings" class="col-3">
+                                    {% if pizza.topping_type == cheese_topping_type or pizza.topping_type == special_topping_type %}
+                                      <select class="selectpicker selecting_toppings" name="pizza_toppings" multiple searchable data-max-options="0">
+                                    {% elif pizza.topping_type == one_topping_topping_type %}
+                                      <select class="selectpicker selecting_toppings" name="pizza_toppings" multiple searchable data-max-options="1">
+                                    {% elif pizza.topping_type == two_topping_topping_type %}
+                                      <select class="selectpicker selecting_toppings" name="pizza_toppings" multiple searchable data-max-options="2">
+                                    {% elif pizza.topping_type == three_topping_topping_type %}
+                                      <select class="selectpicker selecting_toppings" name="pizza_toppings" multiple searchable data-max-options="3">
+                                    {% endif %}
+
+                                        {% if pizza.topping_type == cheese_topping_type or pizza.topping_type == special_topping_type %}
+                                        <option value="" disabled>No Topping</option>
+                                        {% else %}
+                                            {% for topping in topping_list %}
+                                              {% if topping in pizza.topping.all %} <!-- If this topping exists in the cart already -->
+                                                <option value="{{topping.id}}" selected>{{topping.topping_name}}</option>
+                                              {% else %}
+                                                <option value="{{topping.id}}">{{topping.topping_name}}</option>
+                                              {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                               </td>
+                               {% if pizza.pizza_size == size_small %}
+                               <td class="col-2 pizza_price">{{pizza.price_small}}</td> <!-- IDEA: Large or small by backend -->
+                               {% else %}
+                               <td class="col-2 pizza_price">{{pizza.price_large}}</td> <!-- IDEA: Large or small by backend -->
+                               {% endif %}
+                               <td id="pizza_delete" class="col-1">
+                                  <button type="button" class="pizza_delete_item">X</button>
+                               </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+            </form>
+          </div>
 
           <hr>
 
           <h3>Subs:</h3>
-          <form id="subs_cart" action="" method="post" onsubmit="validate_sub_cart">
-              {% csrf_token %}
-              <!-- IDEA: Subs -->
-              <div>
-                <table class="table table-striped">
-                    <thead>
+          <div id="subs_cart">
+            <form action="" method="post" onsubmit="validate_sub_cart">
+                {% csrf_token %}
+                <!-- IDEA: Subs -->
+                <div>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr class="d-flex">
+                              <th class="col-4">Sub</th>
+                              <th class="col-2">Size</th>
+                              <th class="col-3">Sub addons</th>
+                              <th class="col-2">Price</th>
+                              <th class="col-1"></th>
+                          </tr>
 
+                      </thead>
+                      <tbody id="subs_cart_body">
+                        {% for sub in subs_in_cart %}
                         <tr class="d-flex">
-                            <th class="col-4">Sub</th>
-                            <th class="col-2">Size</th>
-                            <th class="col-3">Sub addons</th>
-                            <th class="col-2">Price</th>
-                            <th class="col-1"></th>
-                        </tr>
-
-                    </thead>
-                    <tbody id="subs_cart_body">
-                      {% for sub in subs_in_cart %}
-                      <tr class="d-flex">
-                          <td class="col-4">{{sub.sub_name}}</td>
-                          <td class="col-2">
-                            <select class="changing_size" name="sub_size">
-                              {% if sub.sub_size == size_small %}
-                                <option value="Small" selected>Small</option>
-                                <option value="Large">Large</option>
-                              {% else %}
-                              <option value="Small">Small</option>
-                              <option value="Large" selected>Large</option>
-                              {% endif %}
-                            </select>
-                          </td>
-                          <td id="sub_sub_addons" class="col-3">
-                               {% if sub == steak_sub %}
-                                 <select class="selectpicker sub_addons_select" name="sub_addons" multiple searchable data-max-options="4">
+                            <td class="col-4">{{sub.sub_name}}</td>
+                            <td class="col-2">
+                              <select class="changing_size_sub" name="sub_size">
+                                {% if sub.sub_size == size_small %}
+                                  <option value="Small" selected>Small</option>
+                                  <option value="Large">Large</option>
                                 {% else %}
-                                <select class="selectpicker sub_addons_select" multiple searchable data-max-options="1">
-                               {% endif %}
-                                    <!-- IDEA: Only Steak has more options -->
-                                   {% if sub == steak_sub %}
-                                     {% for addon in sub_addons_list %}
-                                       {% if addon in sub.sub_addon.all %}
-                                         <option value="{{addon.id}}" selected>{{addon.sub_addon_name}}</option>
-                                       {% else %}
-                                         <option value="{{addon.id}}">{{addon.sub_addon_name}}</option>
-                                       {% endif %}
-                                     {% endfor %}
-                                   {% else %}
-                                      <option value="{{extra_cheese_sub_addon.id}}">{{extra_cheese_sub_addon.sub_addon_name}}</option>
-                                   {% endif %}
-                               </select>
-                          </td>
-                          {% if sub.sub_size == size_small %}
-                            <td class="col-2">{{sub.price_small}}</td>
-                          {% else %}
-                            <td class="col-2">{{sub.price_large}}</td>
-                          {% endif %}
-                          <td class="col-1">
-                            <button type="button" class="sub_delete_item">X</button>
-                          </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                </table>
-              </div>
-          </form>
+                                <option value="Small">Small</option>
+                                <option value="Large" selected>Large</option>
+                                {% endif %}
+                              </select>
+                            </td>
+                            <td id="sub_sub_addons" class="col-3">
+                                 {% if sub == steak_sub %}
+                                   <select class="selectpicker selecting_addons" name="sub_addons" multiple searchable data-max-options="4">
+                                  {% else %}
+                                  <select class="selectpicker selecting_addons" multiple searchable data-max-options="1">
+                                 {% endif %}
+                                      <!-- IDEA: Only Steak has more options -->
+                                     {% if sub == steak_sub %}
+                                       {% for addon in sub_addons_list %}
+                                         {% if addon in sub.sub_addon.all %}
+                                           <option value="{{addon.id}}" selected>{{addon.sub_addon_name}}</option>
+                                         {% else %}
+                                           <option value="{{addon.id}}">{{addon.sub_addon_name}}</option>
+                                         {% endif %}
+                                       {% endfor %}
+                                     {% else %}
+                                        {% if extra_cheese_sub_addon in sub.sub_addon.all  %}
+                                          <option value="{{extra_cheese_sub_addon.id}}" selected>{{extra_cheese_sub_addon.sub_addon_name}}</option>
+                                        {% else %}
+                                          <option value="{{extra_cheese_sub_addon.id}}">{{extra_cheese_sub_addon.sub_addon_name}}</option>
+                                        {% endif %}
+                                     {% endif %}
+                                 </select>
+                            </td>
+                            {% if sub.sub_size == size_small %}
+                              <td class="col-2 sub_price">{{sub.price_small}}</td>
+                            {% else %}
+                              <td class="col-2 sub_price">{{sub.price_large}}</td>
+                            {% endif %}
+                            <td class="col-1">
+                              <button type="button" class="sub_delete_item">X</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+            </form>
+          </div>
 
           <hr>
 
           <h3>Pastas:</h3>
-          <form id="pastas_cart" action="" method="post" onsubmit="validate_pasta_cart">
-              {% csrf_token %}
-              <!-- IDEA: Pastas -->
-              <div>
-                <table class="table table-striped">
-                    <thead>
+          <div id="pastas_cart">
+            <form action="" method="post" onsubmit="validate_pasta_cart">
+                {% csrf_token %}
+                <!-- IDEA: Pastas -->
+                <div>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr class="d-flex">
+                              <th class="col-9">Pasta</th>
+                              <th class="col-2">Price</th>
+                              <th class="col-1"></th>
+                          </tr>
+                      </thead>
+                      <tbody id="pastas_cart_body">
+                        {% for pasta in pastas_in_cart %}
                         <tr class="d-flex">
-                            <th class="col-9">Pasta</th>
-                            <th class="col-2">Price</th>
-                            <th class="col-1"></th>
+                            <td class="col-9">{{pasta.pasta_name}}</td>
+                            <td class="col-2">{{pasta.price}}</td>
+                            <td class="col-1">
+                              <button type="button" class="pasta_delete_item">X</button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody id="pastas_cart_body">
-                      {% for pasta in pastas_in_cart %}
-                      <tr class="d-flex">
-                          <td class="col-9">{{pasta.pasta_name}}</td>
-                          <td class="col-2">{{pasta.price}}</td>
-                          <td class="col-1">
-                            <button type="button" class="pasta_delete_item">X</button>
-                          </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                </table>
-              </div>
-          </form>
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+            </form>
+          </div>
 
           <hr>
 
           <h3>Salads:</h3>
-          <form id="salads_cart" action="" method="post" onsubmit="validate_salad_cart">
-              {% csrf_token %}
-              <!-- IDEA: Salads -->
-              <div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr class="d-flex">
-                            <th class="col-9">Salad</th>
-                            <th class="col-2">Price</th>
-                            <th class="col-1"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="salads_cart_body">
-                        {% for salad in salads_in_cart %}
-                        <tr class="d-flex">
-                            <td class="col-9">{{salad.salad_name}}</td>
-                            <td class="col-2">{{salad.price}}</td>
-                            <td class="col-1">
-                              <button type="button" class="salad_delete_item">X</button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-              </div>
-          </form>
+          <div id="salads_cart">
+            <form action="" method="post" onsubmit="validate_salad_cart">
+                {% csrf_token %}
+                <!-- IDEA: Salads -->
+                <div>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr class="d-flex">
+                              <th class="col-9">Salad</th>
+                              <th class="col-2">Price</th>
+                              <th class="col-1"></th>
+                          </tr>
+                      </thead>
+                      <tbody id="salads_cart_body">
+                          {% for salad in salads_in_cart %}
+                          <tr class="d-flex">
+                              <td class="col-9">{{salad.salad_name}}</td>
+                              <td class="col-2">{{salad.price}}</td>
+                              <td class="col-1">
+                                <button type="button" class="salad_delete_item">X</button>
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+            </form>
+          </div>
 
           <hr>
 
           <h3>Dinner Platters:</h3>
-          <form id="dinner_platters_cart" action="" method="post" onsubmit="validate_dinner_cart">
-              {% csrf_token %}
-              <!-- IDEA: Dinners -->
-              <div>
-                <table class="table table-striped">
-                    <thead>
+          <div id="dinner_platters_cart">
+            <form action="" method="post" onsubmit="validate_dinner_cart">
+                {% csrf_token %}
+                <!-- IDEA: Dinners -->
+                <div>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr class="d-flex">
+                              <th class="col-4">Dinner plates</th>
+                              <th class="col-2">Size</th>
+                              <th class="col-3"></th>
+                              <th class="col-2">Price</th>
+                              <th class="col-1"></th>
+                          </tr>
+                      </thead>
+                      <tbody id="dinner_platters_cart_body">
+                        {% for dinner in dinner_platters_in_cart %}
                         <tr class="d-flex">
-                            <th class="col-4">Dinner plates</th>
-                            <th class="col-2">Size</th>
-                            <th class="col-3"></th>
-                            <th class="col-2">Price</th>
-                            <th class="col-1"></th>
+                            <td class="col-4">{{dinner.plate_name}}</td>
+                            <td class="col-2">
+                              <select class="changing_size_dinner" name="dinner_size">
+                                {% if dinner.plate_size == size_small %}
+                                  <option value="Small" selected>Small</option>
+                                  <option value="Large">Large</option>
+                                {% else %}
+                                  <option value="Small">Small</option>
+                                  <option value="Large" selected>Large</option>
+                                {% endif %}
+
+                              </select>
+                            </td>
+                            <td class="col-3"></td>
+                            {% if dinner.plate_size == size_small %}
+                              <td class="col-2 dinner_price">{{dinner.price_small}}</td>
+                            {% else %}
+                              <td class="col-2 dinner_price">{{dinner.price_large}}</td>
+                            {% endif %}
+
+                            <td class="col-1">
+                              <button type="button" class="dinner_delete_item">X</button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody id="dinner_platters_cart_body">
-                      {% for dinner in dinner_platters_in_cart %}
-                      <tr class="d-flex">
-                          <td class="col-4">{{dinner.plate_name}}</td>
-                          <td class="col-2">
-                            <select class="changing_size" name="dinner_size">
-                              {% if dinner.plate_size == size_small %}
-                                <option value="Small" selected>Small</option>
-                                <option value="Large">Large</option>
-                              {% else %}
-                                <option value="Small">Small</option>
-                                <option value="Large" selected>Large</option>
-                              {% endif %}
-
-                            </select>
-                          </td>
-                          <td class="col-3"></td>
-                          {% if dinner.plate_size == size_small %}
-                            <td class="col-2">{{dinner.price_small}}</td>
-                          {% else %}
-                            <td class="col-2">{{dinner.price_large}}</td>
-                          {% endif %}
-
-                          <td class="col-1">
-                            <button type="button" class="dinner_delete_item">X</button>
-                          </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                </table>
-              </div>
-          </form>
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+            </form>
+          </div>
 
           <div class="cart_footer">
-            <button type="submit" name="button" class="apply_changes">Apply Changes</button>
+            <button type="button" name="button" class="apply_changes" onClick="document.location.reload(true)">Apply Changes</button>
           </div>
       </div>
 
@@ -325,6 +338,7 @@
                 else {
                     alert("There was an error.");
                 }
+                document.location.reload(true);
             }
 
             // Add data to send with request
@@ -365,7 +379,8 @@
                 else {
                     alert("There was an error.");
                 }
-            }
+                document.location.reload(true);
+            };
 
             // Add data to send with request
             let changing_size_sub = new FormData();
@@ -405,6 +420,7 @@
                 else {
                     alert("There was an error.");
                 }
+                document.location.reload(true);
             }
 
             // Add data to send with request
@@ -415,6 +431,211 @@
       });
 
     // Handling Changing Size.
-  });
+      // Pizzas Size alteration:
+      document.querySelectorAll('.changing_size_pizza').forEach(function(select, index) {
+        select.onchange = () => {
+            const chosen_value = select.options[select.selectedIndex].value
+            console.log(chosen_value);
+            // figure out the index of the deleted block:
+            console.log("pizza index in the cart is " + index);
+
+            // initialize a new request
+            const request = new XMLHttpRequest();
+            let url = '/cart_change/changing_size/pizza/';
+
+            request.open('POST', url + index);
+
+            // callback function for when request completes
+            request.onload = () => {
+                // Extract JSON data from request
+                // Extract JSON data from request
+                let data;
+                try {
+                    data = JSON.parse(request.responseText);
+                } catch(e) {
+                    alert("Something went wrong"); // error in the above string (in this case, yes)!
+                }
+                // Notify user
+                if (data.changed_size) {
+                  const price_td = document.querySelectorAll(".pizza_price");
+                  const price_td_array = Array.prototype.slice.call(price_td);
+                  price_td_array[index].innerHTML = data.price_display;
+                }
+                else {
+                    alert("There was an error.");
+                }
+                // reload the page
+            }
+
+            // Add data to send with request
+            let changing_size_pizza = new FormData();
+            changing_size_pizza.append('chosen_value', chosen_value);
+            changing_size_pizza.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            request.send(changing_size_pizza);
+        }
+      });
+
+      // Sub Size alteration:
+      document.querySelectorAll('.changing_size_sub').forEach(function(select, index) {
+        select.onchange = () => {
+            const chosen_value = select.options[select.selectedIndex].value
+            console.log(chosen_value);
+            // figure out the index of the deleted block:
+            console.log("sub index in the cart is " + index);
+
+            // initialize a new request
+            const request = new XMLHttpRequest();
+            let url = '/cart_change/changing_size/sub/';
+
+            request.open('POST', url + index);
+
+            // callback function for when request completes
+            request.onload = () => {
+                // Extract JSON data from request
+                // Extract JSON data from request
+                let data;
+                try {
+                    data = JSON.parse(request.responseText);
+                } catch(e) {
+                    alert("Something went wrong"); // error in the above string (in this case, yes)!
+                }
+                // Notify user
+                if (data.changed_size) {
+                  const price_td = document.querySelectorAll(".sub_price");
+                  const price_td_array = Array.prototype.slice.call(price_td);
+                  price_td_array[index].innerHTML = data.price_display;
+                }
+                else {
+                    alert("There was an error.");
+                }
+            }
+
+            // Add data to send with request
+            let changing_size_sub = new FormData();
+            changing_size_sub.append('chosen_value', chosen_value);
+            changing_size_sub.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            request.send(changing_size_sub);
+        }
+      });
+
+      // Dinner Size alteration:
+      document.querySelectorAll('.changing_size_dinner').forEach(function(select, index) {
+        select.onchange = () => {
+            const chosen_value = select.options[select.selectedIndex].value
+            console.log(chosen_value);
+            // figure out the index of the deleted block:
+            console.log("dinner index in the cart is " + index);
+
+            // initialize a new request
+            const request = new XMLHttpRequest();
+            let url = '/cart_change/changing_size/dinner/';
+
+            request.open('POST', url + index);
+
+            // callback function for when request completes
+            request.onload = () => {
+                // Extract JSON data from request
+                let data;
+                try {
+                    data = JSON.parse(request.responseText);
+                } catch(e) {
+                    alert("Something went wrong"); // error in the above string (in this case, yes)!
+                }
+                // Notify user
+                if (data.changed_size) {
+                    const price_td = document.querySelectorAll(".dinner_price");
+                    const price_td_array = Array.prototype.slice.call(price_td);
+                    price_td_array[index].innerHTML = data.price_display;
+                }
+                else {
+                    alert("There was an error.");
+                }
+
+            }
+
+            // Add data to send with request
+            let changing_size_dinner = new FormData();
+            changing_size_dinner.append('chosen_value', chosen_value);
+            changing_size_dinner.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            request.send(changing_size_dinner);
+        }
+      });
+
+    // HANDLING SELECTING Toppings
+      document.querySelectorAll('.selecting_toppings').forEach(function(select, index){
+        select.onchange = () => {
+          // Save selected toppings into an array
+          let selected_toppings = []
+          for ( var i = 0; i < select.selectedOptions.length; i++) {
+            selected_toppings.push(select.selectedOptions[i].value);
+            console.log('selected topping id is: ' + select.selectedOptions[i].value);
+          }
+          console.log('selected toppings value id are: '+selected_toppings);
+
+          // initialize a new request
+          const request = new XMLHttpRequest();
+          let url = '/cart_change/selecting_toppings/pizza/';
+
+          request.open('POST', url + index);  // manipulate this[index] particular pizza
+
+          // callback function for when request completes
+          request.onload = () => {}
+
+          // Add data to send with request
+          let toppings_form = new FormData();
+          toppings_form.append('selected_toppings', JSON.stringify(selected_toppings));
+          toppings_form.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+          request.send(toppings_form);
+        }
+      });
+
+    // HANDLING ADDON SELECTION
+    document.querySelectorAll('.selecting_addons').forEach(function(select, index){
+      select.onchange = () => {
+        // Save selected toppings into an array
+        let selected_addons = []
+        for ( var i = 0; i < select.selectedOptions.length; i++) {
+          selected_addons.push(select.selectedOptions[i].value);
+          console.log('selected addons id is: ' + select.selectedOptions[i].value);
+        }
+        console.log('selected addons value id are: ' + selected_addons);
+
+        // initialize a new request
+        const request = new XMLHttpRequest();
+        let url = '/cart_change/selecting_addons/sub/';
+
+        request.open('POST', url + index);  // manipulate this[index] particular sub
+
+        // callback function for when request completes
+        request.onload = () => {
+          // Extract JSON data from request
+          let data;
+          try {
+              data = JSON.parse(request.responseText);
+          } catch(e) {
+              alert("Something went wrong"); // error in the above string (in this case, yes)!
+          }
+          // Notify user
+          if (data.selected_addons) {
+              const sub_price_td = document.querySelectorAll(".sub_price");
+              const sub_price_td_array = Array.prototype.slice.call(sub_price_td);
+              sub_price_td_array[index].innerHTML = data.sub_price;
+          }
+          else {
+              alert("There was an error.");
+          }
+          // reload the page
+
+        }
+
+        // Add data to send with request
+        let addons_form = new FormData();
+        addons_form.append('selected_addons', JSON.stringify(selected_addons));
+        addons_form.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        request.send(addons_form);
+      }
+    });
+
+});
 </script>
 {% endblock %}

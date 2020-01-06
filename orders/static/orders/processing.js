@@ -8,7 +8,6 @@ window.onscroll = () => {
    }
 };
 
-// Functions to validate form submissions
-function validate_pizza_cart(){
-
-}
+document.addEventListener('DOMContentLoaded', function() {
+  
+});

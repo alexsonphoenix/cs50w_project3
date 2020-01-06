@@ -4,6 +4,7 @@ from django.db.utils import OperationalError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+import json
 
 from orders.models import *
 from django.contrib.auth.models import User
@@ -166,41 +167,206 @@ def cart_change(request, decision, item_name, item_index):
         # Get the currently active cart to start working on
         currently_active_cart = Cart.objects.get(customer=current_client ,cart_status=cart_active_status)
 
-        print('decision is '+decision)
+        print('decision is ' + decision)
 
+        # 1: HANDLING DELETIONS
         if decision=="delete":
-            # First, access the item:
             if item_name == "pizza":
                 deletion = currently_active_cart.pizzas.all()
-                deletion[item_index].delete()
+                # Change the sum_price
+                if deletion[item_index].pizza_size == size_small:
+                    currently_active_cart.sum_price -= deletion[item_index].price_small
+                else:
+                    currently_active_cart.sum_price -= deletion[item_index].price_large
+                currently_active_cart.pizzas.remove(deletion[item_index])
                 currently_active_cart.save()
                 print("pizza with index: "+ str(item_index)+" is deleted")
             elif item_name == "sub":
                 deletion = currently_active_cart.subs.all()
-                deletion[item_index].delete()
+                # Change the sum_price
+                if deletion[item_index].sub_size == size_small:
+                    currently_active_cart.sum_price -= deletion[item_index].price_small
+                else:
+                    currently_active_cart.sum_price -= deletion[item_index].price_large
+                currently_active_cart.subs.remove(deletion[item_index])
                 currently_active_cart.save()
                 print("sub with index: "+ str(item_index)+" is deleted")
             elif item_name == "pasta":
                 deletion = currently_active_cart.pastas.all()
-                deletion[item_index].delete()
+                currently_active_cart.sum_price -= deletion[item_index].price
+                currently_active_cart.pastas.remove(deletion[item_index])
                 currently_active_cart.save()
                 print("pasta with index: "+ str(item_index)+" is deleted")
             elif item_name == "salad":
                 deletion = currently_active_cart.salads.all()
-                deletion[item_index].delete()
+                currently_active_cart.sum_price -= deletion[item_index].price
+                currently_active_cart.salads.remove(deletion[item_index])
                 currently_active_cart.save()
                 print("salad with index: "+ str(item_index)+" is deleted")
             elif item_name == "dinner":
                 deletion = currently_active_cart.dinner_platters.all()
-                deletion[item_index].delete()
+                # Change the sum_price
+                if deletion[item_index].plate_size == size_small:
+                    currently_active_cart.sum_price -= deletion[item_index].price_small
+                else:
+                    currently_active_cart.sum_price -= deletion[item_index].price_large
+
+                currently_active_cart.dinner_platters.remove(deletion[item_index])
                 currently_active_cart.save()
                 print("dinner with index: "+ str(item_index)+" is deleted")
 
             return JsonResponse({'deleted': True})
 
+        # 2: HANDLING DELETIONS
+        if decision == 'changing_size':
+            # Pizza Changing Size
+            if item_name == "pizza":
+                chosen_value = request.POST["chosen_value"]
+                print("chosen_value is ", chosen_value)
+                price_display = 0 # initialize displaying price
+                # Get list of pizzas in cart
+                changable_list = currently_active_cart.pizzas.all()
+                # Update the size
+                if chosen_value == "Small":
+                    changable_list.filter(id=changable_list[item_index].id).update(pizza_size=size_small)
+                    changable_list[item_index].save()
+                    print("size has been changed to small")
+                    # Change the sum_price according to the changes of size
+                    currently_active_cart.sum_price -= changable_list[item_index].price_large # subtract the old price
+                    currently_active_cart.sum_price += changable_list[item_index].price_small # add the new price
+                    price_display += changable_list[item_index].price_small
+                elif chosen_value == "Large":
+                    changable_list.filter(id=changable_list[item_index].id).update(pizza_size=size_large)
+                    changable_list[item_index].save()
+                    print("size has been changed to small")
+                    # Change the sum_price according to the changes of size
+                    currently_active_cart.sum_price -= changable_list[item_index].price_small # subtract the old price
+                    currently_active_cart.sum_price += changable_list[item_index].price_large # add the new price
+                    price_display += changable_list[item_index].price_large
+                # change the sum_price and save
+                currently_active_cart.save()
+                return JsonResponse({'changed_size': True, 'price_display': price_display})
+
+            # Sub Changing Size
+            elif item_name == "sub":
+                chosen_value = request.POST["chosen_value"]
+                print("chosen_value is ", chosen_value)
+                price_display = 0 # initialize displaying price
+                # Get list of subs in cart
+                changable_list = currently_active_cart.subs.all()
+                # Update the size
+                if chosen_value == "Small":
+                    changable_list.filter(id=changable_list[item_index].id).update(sub_size=size_small)
+                    changable_list[item_index].save()
+                    print("size has been changed to small")
+                    # Change the sum_price according to the changes of size
+                    currently_active_cart.sum_price -= changable_list[item_index].price_large # subtract the old price
+                    currently_active_cart.sum_price += changable_list[item_index].price_small # add the new price
+                    price_display += changable_list[item_index].price_small
+                elif chosen_value == "Large":
+                    changable_list.filter(id=changable_list[item_index].id).update(sub_size=size_large)
+                    changable_list[item_index].save()
+                    print("size has been changed to small")
+                    # Change the sum_price according to the changes of size
+                    currently_active_cart.sum_price -= changable_list[item_index].price_small # subtract the old price
+                    currently_active_cart.sum_price += changable_list[item_index].price_large # add the new price
+                    price_display += changable_list[item_index].price_large
+                # change the sum_price and save
+                currently_active_cart.save()
+                return JsonResponse({'changed_size': True, 'price_display': price_display})
+
+            # Dinner Changing Size
+            elif item_name =="dinner":
+                chosen_value = request.POST["chosen_value"]
+                print("chosen_value is ", chosen_value)
+                price_display = 0 # initialize displaying price
+                # Get list of dinner in cart
+                changable_list = currently_active_cart.dinner_platters.all()
+                # Update the size
+                if chosen_value == "Small":
+                    changable_list.filter(id=changable_list[item_index].id).update(plate_size=size_small)
+                    changable_list[item_index].save()
+                    print("size has been changed to small")
+                    # Change the sum_price according to the changes of size
+                    currently_active_cart.sum_price -= changable_list[item_index].price_large # subtract the old price
+                    currently_active_cart.sum_price += changable_list[item_index].price_small # add the new price
+                    price_display += changable_list[item_index].price_small
+                elif chosen_value == "Large":
+                    changable_list.filter(id=changable_list[item_index].id).update(plate_size=size_large)
+                    changable_list[item_index].save()
+                    print("size has been changed to small")
+                    # Change the sum_price according to the changes of size
+                    currently_active_cart.sum_price -= changable_list[item_index].price_small # subtract the old price
+                    currently_active_cart.sum_price += changable_list[item_index].price_large # add the new price
+                    price_display += changable_list[item_index].price_large
+                # change the sum_price and save
+                currently_active_cart.save()
+                return JsonResponse({'changed_size': True, 'price_display': price_display})
+
+        # 3: HANDLING TOPPINGS
+        if decision == 'selecting_toppings':
+            selected_toppings = json.loads(request.POST["selected_toppings"])
+            print("Selected topping list is: ", selected_toppings)
+            # Get list of pizzas in cart
+            changable_list = currently_active_cart.pizzas.all()
+
+            # First, access this particular pizza existing toppings
+            existing_toppings = changable_list[item_index].topping.all()
+            # Delete all existing toppings
+            for e in existing_toppings:
+                changable_list[item_index].topping.remove(e)
+                print("item removed: ", e.topping_name)
+            # Add new toppings
+            for t in selected_toppings:
+                # Query topping based on its id (get from the selected_toppings list)
+                copTopping = Topping.objects.get(pk=t)
+                # ADD
+                newTopping = changable_list[item_index].topping.add(copTopping)
+
+                print("item added: ",copTopping.topping_name)
+            # save
+            changable_list[item_index].save()
+
+            return JsonResponse({'selected_toppings': True})
+
+        # 4: HANDLING ADD-ONS SELECTIONS
+        if decision == 'selecting_addons':
+            selected_addons = json.loads(request.POST["selected_addons"])
+            print("selected_addons list is: ", selected_addons)
+            # Get list of pizzas in cart
+            changable_list = currently_active_cart.subs.all()
+            # Get this SUB price:
+            sub_price = 0 # initialize this value
+            if changable_list[item_index].sub_size == size_small:
+                sub_price = changable_list[item_index].price_small
+            elif changable_list[item_index].sub_size == size_large:
+                sub_price = changable_list[item_index].price_large
+
+            # First, access this particular sub's existing addons
+            existing_addons = changable_list[item_index].sub_addon.all()
+            # Delete all existing addons
+            for e in existing_addons:
+                changable_list[item_index].sub_addon.remove(e)
+                currently_active_cart.sum_price -= e.price # subtract the old price
+                print("item removed: ", e.sub_addon_name)
+            # Add new addon
+            for a in selected_addons:
+                # Query addon based on its id (get from the selected_addons list)
+                copSub_addon = Sub_addon.objects.get(pk=a)
+                # ADD
+                newSub_addon = changable_list[item_index].sub_addon.add(copSub_addon)
+                currently_active_cart.sum_price += copSub_addon.price # add the new price
+                sub_price += copSub_addon.price
+                print("item added: ",copSub_addon.sub_addon_name)
+            # save
+            changable_list[item_index].save()
+            currently_active_cart.save()
+
+            return JsonResponse({'selected_addons': True, 'sub_price': sub_price})
+
 
 # Store in the database (Orders table) the ordered items in Cart.
-# def purchase():
+# def checkout():
 #     if not request.user.is_authenticated:
 #         return render(request, "orders/login.html", {'message': "Please login to continue"})
 #     return JsonResponse({'value': True})
